@@ -60,6 +60,7 @@ class SendRequest implements Runnable {
 			byte modulo = (byte) (System.currentTimeMillis() % config.getKeys().length);
 			TTransport transport;
 			String key = config.getKeys()[modulo];
+			System.err.println(modulo + ";" + key + ";" + config.getMapProperties().get(key));
 			transport = new TFramedTransport(new TSocket(key, config.getMapProperties().get(key)));
 			transport.open();
 

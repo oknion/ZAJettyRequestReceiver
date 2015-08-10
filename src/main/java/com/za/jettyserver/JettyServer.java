@@ -13,7 +13,7 @@ public class JettyServer {
 	public static void main(String[] args) throws Exception {
 		BasicConfigurator.configure();
 		Properties properties = loadConfig("properties/configPort.properties");
-
+		System.out.println(properties.getProperty("port"));
 		Server server = new Server(Integer.parseInt(properties.getProperty("port")));
 		ServletHandler handler = new ServletHandler();
 		server.setHandler(handler);
