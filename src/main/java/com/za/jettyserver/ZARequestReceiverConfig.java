@@ -11,8 +11,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 public class ZARequestReceiverConfig {
 	private final static ZARequestReceiverConfig INSTANCE = new ZARequestReceiverConfig();
-	Map<String, Integer> mapProps = new HashMap<>();
-	private String[] keys;
+	private static Map<String, Integer> mapProps = new HashMap<>();
+	private static String[] keys;
 	private static Properties config = new Properties();
 	private final static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
 	private static final ReadLock rl = rwl.readLock();
@@ -62,17 +62,15 @@ public class ZARequestReceiverConfig {
 			FileInputStream in = new FileInputStream(file);
 			config.load(in);
 			mapProps.clear();
-			keys = new String[config.keySet().size()];
-			int i = 0;
 			for (Object key : config.keySet()) {
 				try {
 					mapProps.put(key.toString(), Integer.parseInt(config.getProperty(key.toString())));
-					keys[i] = key.toString();
 				} catch (NumberFormatException e) {
 
 				}
-				++i;
 			}
+			keys = new String[mapProps.size()];
+			mapProps.keySet().toArray(keys);
 
 		} catch (IOException e) {
 			System.err.println("Could not load configuration!....");

@@ -17,12 +17,14 @@ import org.apache.thrift.transport.TTransport;
 import com.za.verify.VerifyRequestService;
 
 public class PassRequestWorker implements Runnable {
-	private LinkedBlockingQueue<String[]> strings;
+	private LinkedBlockingQueue<String[]> requests;
 	ThreadPoolExecutor executor;
+	private static final int MAX_QUEUE_SIZE = 1000000;
 
-	public PassRequestWorker(LinkedBlockingQueue<String[]> strings) {
-		this.strings = strings;
-		executor = new ThreadPoolExecutor(2, 2, 10L, TimeUnit.SECONDS, (BlockingQueue) new LinkedBlockingQueue<>());
+	public PassRequestWorker(LinkedBlockingQueue<String[]> requests) {
+		this.requests = requests;
+		executor = new ThreadPoolExecutor(2, 4, 10L, TimeUnit.SECONDS,
+				(BlockingQueue) new LinkedBlockingQueue<>(MAX_QUEUE_SIZE));
 	}
 
 	@Override
@@ -30,8 +32,10 @@ public class PassRequestWorker implements Runnable {
 
 		while (true) {
 			try {
-				strings.poll(2, TimeUnit.SECONDS);
-				executor.execute(new SendRequest(strings.take()));
+				String[] s;
+				if ((s = requests.poll(2L, TimeUnit.SECONDS)) != null) {
+					executor.execute(new SendRequest(s));
+				}
 				Thread.sleep(0);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

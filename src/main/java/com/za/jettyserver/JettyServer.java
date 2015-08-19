@@ -18,11 +18,14 @@ public class JettyServer {
 		//
 		if (("false").equals(properties.get("multiVerifyServer"))) {
 			ZARequestReceiverConfig.getInstance().init("properties/verifyservers.properties");
+			System.out.println("Start server with one verifyserverconfig");
 		} else {
+			System.out.println("Start server with multi verifyserverconfig");
 			new Thread(new ConfigChangeListener("properties/verifyservers.properties")).start();
 		}
 		Server server = new Server(Integer.parseInt(properties.getProperty("port")));
 		ServletHandler handler = new ServletHandler();
+
 		server.setHandler(handler);
 		handler.addServletWithMapping(RequestReceiver.class, "/requestreceiver");
 
