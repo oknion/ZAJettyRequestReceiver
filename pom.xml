@@ -8,6 +8,7 @@
   	<jettyVersion>9.2.10.v20150310</jettyVersion>
   </properties>
   <dependencies>
+  <!-- Jetty -->
   <dependency>
 	<groupId>org.eclipse.jetty</groupId>
 	<artifactId>jetty-servlet</artifactId>
@@ -18,13 +19,12 @@
       <artifactId>jetty-server</artifactId>
       <version>${jettyVersion}</version>
     </dependency>
-   
+   <!-- SLF4J -->
 <dependency>
 	<groupId>org.slf4j</groupId>
 	<artifactId>slf4j-log4j12</artifactId>
 	<version>1.7.12</version>
 </dependency>
-
 	<!-- Thrift lib -->
 	<dependency>
   <groupId>org.apache.thrift</groupId>

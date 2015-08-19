@@ -1,12 +1,13 @@
 package com.za.jettyserver;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
@@ -21,20 +22,18 @@ public class PassRequestWorker implements Runnable {
 
 	public PassRequestWorker(LinkedBlockingQueue<String[]> strings) {
 		this.strings = strings;
-		executor = new ThreadPoolExecutor(2, 4, 10L, TimeUnit.SECONDS, (BlockingQueue) new LinkedBlockingQueue<>());
-		// TODO Auto-generated constructor stub
+		executor = new ThreadPoolExecutor(2, 2, 10L, TimeUnit.SECONDS, (BlockingQueue) new LinkedBlockingQueue<>());
 	}
 
 	@Override
 	public void run() {
 
 		while (true) {
-			String[] rq;
 			try {
-				rq = strings.take();
-				executor.execute(new SendRequest(rq));
+				strings.poll(2, TimeUnit.SECONDS);
+				executor.execute(new SendRequest(strings.take()));
+				Thread.sleep(0);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -45,34 +44,48 @@ public class PassRequestWorker implements Runnable {
 
 class SendRequest implements Runnable {
 	private String[] request;
-	ZARequestReceiverConfig config = ZARequestReceiverConfig.getInstance();
+	private static ZARequestReceiverConfig config = ZARequestReceiverConfig.getInstance();
+	private static String[] keys = config.getKeys();
+	private static Map<String, Integer> maps = config.getMapProperties();
 
 	public SendRequest(String[] request) {
 		this.request = request;
-
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void run() {
 
 		try {
-			byte modulo = (byte) (System.currentTimeMillis() % config.getKeys().length);
+			byte modulo = (byte) (System.currentTimeMillis() % keys.length);
 			TTransport transport;
-			String key = config.getKeys()[modulo];
-			System.err.println(modulo + ";" + key + ";" + config.getMapProperties().get(key));
-			transport = new TFramedTransport(new TSocket(key, config.getMapProperties().get(key)));
+			String key = keys[modulo];
+			transport = new TFramedTransport(new TSocket(key, maps.get(key)));
 			transport.open();
-
 			TProtocol protocol = new TBinaryProtocol(transport);
 			VerifyRequestService.Client client = new VerifyRequestService.Client(protocol);
-			client.verifyAndSubmit(Arrays.toString(request));
-
+			System.out.println("Pass request to " + key + maps.get(key));
+			for (int i = 0; i < request.length; i++) {
+				if (request[i] == null) {
+					request[i] = "null";
+				}
+			}
+			List<String> strings = Arrays.asList(request);
+			client.verifyAndSubmit(strings);
 			transport.close();
 
-		} catch (TException x) {
+		} catch (Exception x) {
 			x.printStackTrace();
 		}
 	}
-
+	/*
+	 * convert Object to byte buffer private ByteBuffer toByteBuffer(Object s) {
+	 * ByteBuffer byteBuffer; ByteArrayOutputStream byteout = new
+	 * ByteArrayOutputStream(); try { ObjectOutputStream out = new
+	 * ObjectOutputStream(byteout); out.writeObject(s); } catch (IOException e)
+	 * { e.printStackTrace(); return null; } byteBuffer =
+	 * ByteBuffer.wrap(byteout.toByteArray());
+	 * byteBuffer.put(byteout.toByteArray());
+	 * 
+	 * return byteBuffer; }
+	 */
 }

@@ -57,7 +57,7 @@ public class ZARequestReceiverConfig {
 	}
 
 	public void init(String file) {
-		rl.lock();
+		wl.lock();
 		try {
 			FileInputStream in = new FileInputStream(file);
 			config.load(in);
@@ -78,7 +78,7 @@ public class ZARequestReceiverConfig {
 			System.err.println("Could not load configuration!....");
 			e.printStackTrace();
 		} finally {
-			rl.unlock();
+			wl.unlock();
 		}
 
 	}
