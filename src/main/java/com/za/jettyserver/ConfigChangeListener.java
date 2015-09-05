@@ -34,7 +34,6 @@ public class ConfigChangeListener implements Runnable {
 		try {
 			startWatcher(dirPath, fileName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

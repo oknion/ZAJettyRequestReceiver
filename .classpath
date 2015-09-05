@@ -32,5 +32,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/oknion/DevApps/Gearman/java-gearman-service-0.6.6.jar" sourcepath="/home/oknion/DevApps/Gearman/java-gearman-service-0.6.6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

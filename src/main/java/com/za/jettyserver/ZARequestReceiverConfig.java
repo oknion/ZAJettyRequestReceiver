@@ -9,6 +9,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
+import org.apache.log4j.Logger;
+
 public class ZARequestReceiverConfig {
 	private final static ZARequestReceiverConfig INSTANCE = new ZARequestReceiverConfig();
 	private static Map<String, Integer> mapProps = new HashMap<>();
@@ -17,6 +19,7 @@ public class ZARequestReceiverConfig {
 	private final static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
 	private static final ReadLock rl = rwl.readLock();
 	private static final WriteLock wl = rwl.writeLock();
+	public static final Logger LOGGER = Logger.getLogger(ZARequestReceiverConfig.class.getName());
 
 	private ZARequestReceiverConfig() {
 
@@ -71,10 +74,10 @@ public class ZARequestReceiverConfig {
 			}
 			keys = new String[mapProps.size()];
 			mapProps.keySet().toArray(keys);
+			LOGGER.warn("Reload configuration:" + mapProps.toString());
 
 		} catch (IOException e) {
-			System.err.println("Could not load configuration!....");
-			e.printStackTrace();
+			LOGGER.warn("Could not load configuration.");
 		} finally {
 			wl.unlock();
 		}

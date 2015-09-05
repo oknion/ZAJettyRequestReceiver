@@ -8,6 +8,11 @@
   	<jettyVersion>9.2.10.v20150310</jettyVersion>
   </properties>
   <dependencies>
+  <dependency>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-pool2</artifactId>
+	<version>2.2</version>
+</dependency>
   <!-- Jetty -->
   <dependency>
 	<groupId>org.eclipse.jetty</groupId>
@@ -19,18 +24,41 @@
       <artifactId>jetty-server</artifactId>
       <version>${jettyVersion}</version>
     </dependency>
-   <!-- SLF4J -->
+    <dependency>
+	<groupId>org.eclipse.jetty</groupId>
+	<artifactId>jetty-webapp</artifactId>
+	<version>${jettyVersion}</version>
+</dependency>
+<dependency>
+	<groupId>org.eclipse.jetty</groupId>
+	<artifactId>jetty-util</artifactId>
+	<version>${jettyVersion}</version>
+</dependency>
+
+    
+    <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-api</artifactId>
+	<version>1.7.7</version>
+</dependency>
+    <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-log4j12</artifactId>
+	<version>1.7.7</version>
+</dependency>
+    
+   <!-- SLF4J
 <dependency>
 	<groupId>org.slf4j</groupId>
 	<artifactId>slf4j-log4j12</artifactId>
-	<version>1.7.12</version>
-</dependency>
-	<!-- Thrift lib -->
+	<version>1.2.14</version>
+</dependency> -->
+	<!-- Thrift lib-->
 	<dependency>
   <groupId>org.apache.thrift</groupId>
   <artifactId>libthrift</artifactId>
   <version>0.9.2</version>
-</dependency>
+</dependency> 
   	<dependency>
 		<groupId>javax.servlet</groupId>
 		<artifactId>javax.servlet-api</artifactId>
